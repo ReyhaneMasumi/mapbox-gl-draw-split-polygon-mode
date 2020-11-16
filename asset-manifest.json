@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/mapbox-gl-draw-split-polygon-mode/static/css/main.30ee0a5f.chunk.css",
-    "main.js": "/mapbox-gl-draw-split-polygon-mode/static/js/main.350a3c6d.chunk.js",
-    "main.js.map": "/mapbox-gl-draw-split-polygon-mode/static/js/main.350a3c6d.chunk.js.map",
+    "main.js": "/mapbox-gl-draw-split-polygon-mode/static/js/main.cc46a6e4.chunk.js",
+    "main.js.map": "/mapbox-gl-draw-split-polygon-mode/static/js/main.cc46a6e4.chunk.js.map",
     "runtime-main.js": "/mapbox-gl-draw-split-polygon-mode/static/js/runtime-main.68e02d90.js",
     "runtime-main.js.map": "/mapbox-gl-draw-split-polygon-mode/static/js/runtime-main.68e02d90.js.map",
     "static/css/2.dbeb0df7.chunk.css": "/mapbox-gl-draw-split-polygon-mode/static/css/2.dbeb0df7.chunk.css",
@@ -21,6 +21,6 @@
     "static/css/2.dbeb0df7.chunk.css",
     "static/js/2.6c869696.chunk.js",
     "static/css/main.30ee0a5f.chunk.css",
-    "static/js/main.350a3c6d.chunk.js"
+    "static/js/main.cc46a6e4.chunk.js"
   ]
 }
