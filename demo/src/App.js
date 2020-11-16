@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import mapboxGl from 'mapbox-gl';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
-import SplitPolygunMode from 'mapbox-gl-draw-split-polygon-mode';
+import SplitPolygonMode from 'mapbox-gl-draw-split-polygon-mode';
 import './App.css';
 
 let map;
@@ -88,7 +88,7 @@ function App() {
     draw = new MapboxDraw({
       modes: {
         ...MapboxDraw.modes,
-        splitPolygunMode: SplitPolygunMode,
+        splitPolygonMode: SplitPolygonMode,
       },
       userProperties: true,
     });

@@ -19,7 +19,7 @@ npm install mapbox-gl-draw-split-polygon-mode
 ```js
 import mapboxGl from 'mapbox-gl';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import SplitPolygunMode from 'mapbox-gl-draw-split-polygon-mode';
+import SplitPolygonMode from 'mapbox-gl-draw-split-polygon-mode';
 
 const map = new mapboxgl.Map({
   container: 'map', // container id
@@ -32,13 +32,13 @@ const draw = new MapboxDraw({
   userProperties: true,
   displayControlsDefault: false,
   modes: Object.assign(MapboxDraw.modes, {
-    splitPolygunMode: SplitPolygunMode,
+    splitPolygonMode: SplitPolygonMode,
   }),
 });
 map.addControl(draw);
 
 // when mode drawing should be activated
-draw.changeMode('splitPolygunMode');
+draw.changeMode('splitPolygonMode');
 ```
 
 ## [Example](https://github.com/ReyhaneMasumi/mapbox-gl-draw-split-polygon-mode/blob/main/demo/src/App.js)
