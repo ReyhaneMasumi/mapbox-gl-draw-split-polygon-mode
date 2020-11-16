@@ -1,0 +1,24 @@
+@import url('https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css');
+
+h1,
+p {
+  font-family: Lato;
+}
+
+.map-wrapper {
+  position: relative;
+  height: 90vh;
+  width: 90vw;
+  overflow: hidden;
+  border-radius: inherit;
+}
+#map {
+  width: 90vw;
+  height: 90vh;
+}
+.split-icon {
+  background-image: url('./scissors.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 60%;
+}
