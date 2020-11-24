@@ -1,9 +1,10 @@
-import React, { useRef, useEffect } from 'react';
-import mapboxGl from 'mapbox-gl';
-import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
-import SplitPolygonMode from 'mapbox-gl-draw-split-polygon-mode';
-import './App.css';
+import React, { useRef, useEffect } from "react";
+import mapboxGl from "mapbox-gl";
+import MapboxDraw from "@mapbox/mapbox-gl-draw";
+import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
+import SplitPolygonMode from "mapbox-gl-draw-split-polygon-mode";
+import mapboxGlDrawPassingMode from "mapbox-gl-draw-passing-mode";
+import "./App.css";
 
 let map;
 let draw;
@@ -35,8 +36,8 @@ class extendDrawBar {
   }
   addButton(opt) {
     let ctrl = this;
-    var elButton = document.createElement('button');
-    elButton.className = 'mapbox-gl-draw_ctrl-draw-btn';
+    var elButton = document.createElement("button");
+    elButton.className = "mapbox-gl-draw_ctrl-draw-btn";
     if (opt.classes instanceof Array) {
       opt.classes.forEach((c) => {
         elButton.classList.add(c);
@@ -53,9 +54,9 @@ class extendDrawBar {
 }
 
 function App() {
-  if (mapboxGl.getRTLTextPluginStatus() === 'unavailable')
+  if (mapboxGl.getRTLTextPluginStatus() === "unavailable")
     mapboxGl.setRTLTextPlugin(
-      'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js',
+      "https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js",
       (err) => {
         err && console.error(err);
       },
@@ -65,22 +66,22 @@ function App() {
 
   useEffect(() => {
     map = new mapboxGl.Map({
-      container: mapRef.current || '',
+      container: mapRef.current || "",
       style: `https://map.ir/vector/styles/main/mapir-xyz-light-style.json`,
       center: [51.3857, 35.6102],
-      zoom: 10,
+      zoom: 7.78,
       pitch: 0,
       interactive: true,
       hash: true,
       attributionControl: true,
-      customAttribution: '© Map © Openstreetmap',
+      customAttribution: "© Map © Openstreetmap",
       transformRequest: (url) => {
         return {
           url: url,
           headers: {
-            'x-api-key':
-              'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImRiZWU0YWU4OTk4OTA3MmQ3OTFmMjQ4ZDE5N2VhZTgwZWU2NTUyYjhlYjczOWI2NDdlY2YyYzIzNWRiYThiMzIzOTM5MDkzZDM0NTY2MmU3In0.eyJhdWQiOiI5NDMyIiwianRpIjoiZGJlZTRhZTg5OTg5MDcyZDc5MWYyNDhkMTk3ZWFlODBlZTY1NTJiOGViNzM5YjY0N2VjZjJjMjM1ZGJhOGIzMjM5MzkwOTNkMzQ1NjYyZTciLCJpYXQiOjE1OTA4MjU0NzIsIm5iZiI6MTU5MDgyNTQ3MiwiZXhwIjoxNTkzNDE3NDcyLCJzdWIiOiIiLCJzY29wZXMiOlsiYmFzaWMiXX0.M_z4xJlJRuYrh8RFe9UrW89Y_XBzpPth4yk3hlT-goBm8o3x8DGCrSqgskFfmJTUD2wC2qSoVZzQKB67sm-swtD5fkxZO7C0lBCMAU92IYZwCdYehIOtZbP5L1Lfg3C6pxd0r7gQOdzcAZj9TStnKBQPK3jSvzkiHIQhb6I0sViOS_8JceSNs9ZlVelQ3gs77xM2ksWDM6vmqIndzsS-5hUd-9qdRDTLHnhdbS4_UBwNDza47Iqd5vZkBgmQ_oDZ7dVyBuMHiQFg28V6zhtsf3fijP0UhePCj4GM89g3tzYBOmuapVBobbX395FWpnNC3bYg7zDaVHcllSUYDjGc1A', //dev api key
-            'Mapir-SDK': 'reactjs',
+            "x-api-key":
+              "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImRiZWU0YWU4OTk4OTA3MmQ3OTFmMjQ4ZDE5N2VhZTgwZWU2NTUyYjhlYjczOWI2NDdlY2YyYzIzNWRiYThiMzIzOTM5MDkzZDM0NTY2MmU3In0.eyJhdWQiOiI5NDMyIiwianRpIjoiZGJlZTRhZTg5OTg5MDcyZDc5MWYyNDhkMTk3ZWFlODBlZTY1NTJiOGViNzM5YjY0N2VjZjJjMjM1ZGJhOGIzMjM5MzkwOTNkMzQ1NjYyZTciLCJpYXQiOjE1OTA4MjU0NzIsIm5iZiI6MTU5MDgyNTQ3MiwiZXhwIjoxNTkzNDE3NDcyLCJzdWIiOiIiLCJzY29wZXMiOlsiYmFzaWMiXX0.M_z4xJlJRuYrh8RFe9UrW89Y_XBzpPth4yk3hlT-goBm8o3x8DGCrSqgskFfmJTUD2wC2qSoVZzQKB67sm-swtD5fkxZO7C0lBCMAU92IYZwCdYehIOtZbP5L1Lfg3C6pxd0r7gQOdzcAZj9TStnKBQPK3jSvzkiHIQhb6I0sViOS_8JceSNs9ZlVelQ3gs77xM2ksWDM6vmqIndzsS-5hUd-9qdRDTLHnhdbS4_UBwNDza47Iqd5vZkBgmQ_oDZ7dVyBuMHiQFg28V6zhtsf3fijP0UhePCj4GM89g3tzYBOmuapVBobbX395FWpnNC3bYg7zDaVHcllSUYDjGc1A", //dev api key
+            "Mapir-SDK": "reactjs",
           },
         };
       },
@@ -89,6 +90,9 @@ function App() {
       modes: {
         ...MapboxDraw.modes,
         splitPolygonMode: SplitPolygonMode,
+        passing_mode_line_string: mapboxGlDrawPassingMode(
+          MapboxDraw.modes.draw_line_string
+        ),
       },
       userProperties: true,
     });
@@ -96,34 +100,53 @@ function App() {
       draw: draw,
       buttons: [
         {
-          on: 'click',
+          on: "click",
           action: splitPolygon,
-          classes: ['split-icon'],
+          classes: ["split-icon"],
         },
+
+        ,
       ],
     });
-    map.once('load', () => {
+    map.once("load", () => {
       map.resize();
-      map.addControl(drawBar, 'top-right');
+      map.addControl(drawBar, "top-right");
       draw.set({
-        type: 'FeatureCollection',
+        type: "FeatureCollection",
         features: [
           {
-            type: 'Feature',
+            type: "Feature",
             properties: {},
-            id: 'example-id',
+            id: "example-id",
             geometry: {
-              type: 'Polygon',
               coordinates: [
                 [
-                  [51.41742415918904, 35.73019558439101],
-                  [51.31319413385742, 35.702773908694724],
-                  [51.378997493472525, 35.665562843119986],
-                  [51.45008537540798, 35.67776544979942],
-                  [51.46619566741822, 35.70822028156377],
-                  [51.41742415918904, 35.73019558439101],
+                  [
+                    [52, 35],
+                    [53, 35],
+                    [53, 36],
+                    [52, 36],
+                    [52, 35],
+                  ],
+                ],
+                [
+                  [
+                    [50, 35],
+                    [51, 35],
+                    [51, 36],
+                    [50, 36],
+                    [50, 35],
+                  ],
+                  [
+                    [50.2, 35.2],
+                    [50.8, 35.2],
+                    [50.8, 35.8],
+                    [50.2, 35.8],
+                    [50.2, 35.2],
+                  ],
                 ],
               ],
+              type: "MultiPolygon",
             },
           },
         ],
@@ -132,8 +155,9 @@ function App() {
   }, []);
   const splitPolygon = () => {
     try {
-      draw?.changeMode('splitPolygonMode');
+      draw?.changeMode("splitPolygonMode");
     } catch (err) {
+      alert(err.message);
       console.error(err);
     }
   };
