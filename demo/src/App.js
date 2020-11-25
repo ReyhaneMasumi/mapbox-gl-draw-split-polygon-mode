@@ -98,7 +98,7 @@ function App() {
         {
           on: 'click',
           action: splitPolygon,
-          classes: ['split-icon'],
+          classes: ['split-icon']
         },
       ],
     });
