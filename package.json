@@ -2,8 +2,12 @@
   "name": "mapbox-gl-draw-split-polygon-mode",
   "version": "0.1.0",
   "description": "A custom mode for MapboxGL Draw to split polygons",
-  "main": "src/index.js",
-  "scripts": {},
+  "main": "dist/index.js",
+  "module": "src/index.js",
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ReyhaneMasumi/mapbox-gl-draw-split-polygon-mode.git"
@@ -21,9 +25,17 @@
   },
   "homepage": "https://github.com/ReyhaneMasumi/mapbox-gl-draw-split-polygon-mode#readme",
   "files": [
+    "dist",
     "src"
   ],
-  "devDependencies": {},
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "11.0.2",
+    "@rollup/plugin-inject": "4.0.1",
+    "@rollup/plugin-node-resolve": "7.1.1",
+    "rollup": "^1.27.14",
+    "rollup-plugin-peer-deps-external": "^2.2.3",
+    "rollup-plugin-terser": "^7.0.2"
+  },
   "peerDependencies": {
     "@mapbox/mapbox-gl-draw": "1.2.0"
   },
