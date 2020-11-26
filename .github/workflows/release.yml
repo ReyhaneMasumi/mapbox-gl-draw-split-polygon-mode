@@ -13,7 +13,11 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: 14
+      - name: Bundle 📦
+        run: |
+          npm install
+          npm run build
       - name: Install and Build 🔧
         run: |
           npm install
@@ -26,7 +30,7 @@ jobs:
           BRANCH: gh-pages # The branch the action should deploy to.
           FOLDER: demo/build # The folder the action should deploy.
           CLEAN: true # Automatically remove deleted files from the deploy branch
-      - name: Publish 🔧
+      - name: Publish 📤
         uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.NPM_TOKEN }}
