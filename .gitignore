@@ -112,3 +112,4 @@ demo/build/
 demo/.idea/
 demo/.DS_store/
 demo/.vscode/
+dist/
