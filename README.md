@@ -17,10 +17,12 @@ A custom mode for [MapboxGL-Draw](https://github.com/mapbox/mapbox-gl-draw) to s
 ```bash
 npm install mapbox-gl-draw-split-polygon-mode mapbox-gl-draw-passing-mode
 ```
+
 or use CDN:
 
 ```html
-<script src='https://unpkg.com/mapbox-gl-draw-split-polygon-mode'></script>
+<script src="https://unpkg.com/mapbox-gl-draw-passing-mode"></script>
+<script src="https://unpkg.com/mapbox-gl-draw-split-polygon-mode"></script>
 ```
 
 ## Usage
