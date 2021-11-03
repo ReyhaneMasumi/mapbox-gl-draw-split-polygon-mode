@@ -1,3 +1,4 @@
+import { events } from "@mapbox/mapbox-gl-draw/src/constants";
 import lineIntersect from '@turf/line-intersect';
 import booleanDisjoint from '@turf/boolean-disjoint';
 import { lineString } from '@turf/helpers';
