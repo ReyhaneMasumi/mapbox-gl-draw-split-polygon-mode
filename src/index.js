@@ -27,6 +27,7 @@ SplitPolygonMode.toDisplayFeatures = function (state, geojson, display) {
   display(geojson);
 
   this.changeMode('passing_mode_line_string', (cuttingLineString) => {
+    let allPoly;
     state.main.forEach((el) => {
       if (booleanDisjoint(el, cuttingLineString)) {
         throw new Error('Line must be outside of Polygon');
@@ -38,10 +39,19 @@ SplitPolygonMode.toDisplayFeatures = function (state, geojson, display) {
         );
         polycut.id = el.id;
         this._ctx.api.add(polycut);
+        allPoly.push(polycut)
       }
     });
+    this.fireUpdate(allPoly)
   });
 };
+
+SplitPolygonMode.fireUpdate = function (newF) {
+  this.map.fire(events.UPDATE, {
+    action: 'SplitPolygon',
+    features: newF
+  });
+}
 
 export default SplitPolygonMode;
 
