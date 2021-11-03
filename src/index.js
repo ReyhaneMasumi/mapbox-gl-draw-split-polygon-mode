@@ -27,7 +27,7 @@ SplitPolygonMode.toDisplayFeatures = function (state, geojson, display) {
   display(geojson);
 
   this.changeMode('passing_mode_line_string', (cuttingLineString) => {
-    let allPoly;
+    let allPoly = [];
     state.main.forEach((el) => {
       if (booleanDisjoint(el, cuttingLineString)) {
         throw new Error('Line must be outside of Polygon');
