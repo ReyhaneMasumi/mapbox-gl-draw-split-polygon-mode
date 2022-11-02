@@ -36,9 +36,11 @@
     "rollup-plugin-terser": "^7.0.2"
   },
   "peerDependencies": {
-    "@mapbox/mapbox-gl-draw": "1.2.0"
+    "@mapbox/mapbox-gl-draw": "1.2.0",
+    "mapbox-gl-draw-passing-mode": "^1.0.0"
   },
   "dependencies": {
-    "@turf/turf": "5.1.6"
+    "@turf/turf": "5.1.6",
+    "eslint": "7.13"
   }
 }

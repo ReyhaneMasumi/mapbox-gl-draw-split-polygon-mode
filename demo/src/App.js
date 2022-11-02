@@ -1,9 +1,12 @@
 import React, { useRef, useEffect } from "react";
 import mapboxGl from "mapbox-gl";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
+import defaultStyle from "@mapbox/mapbox-gl-draw/src/lib/theme";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
-import SplitPolygonMode from "mapbox-gl-draw-split-polygon-mode";
-import mapboxGlDrawPassingMode from "mapbox-gl-draw-passing-mode";
+import SplitPolygonMode, {
+  DrawStyles,
+} from "mapbox-gl-draw-split-polygon-mode";
+
 import "./App.css";
 
 let map;
@@ -86,24 +89,24 @@ function App() {
         };
       },
     });
+
     draw = new MapboxDraw({
       modes: {
         ...MapboxDraw.modes,
-        splitPolygonMode: SplitPolygonMode,
-        passing_mode_line_string: mapboxGlDrawPassingMode(
-          MapboxDraw.modes.draw_line_string
-        ),
+        ...SplitPolygonMode,
       },
+      styles: DrawStyles(defaultStyle),
       userProperties: true,
     });
+
     drawBar = new extendDrawBar({
       draw: draw,
       buttons: [
         {
           on: "click",
           action: splitPolygon,
-          classes: ["split-icon"]
-        }
+          classes: ["split-icon"],
+        },
       ],
     });
     map.once("load", () => {
@@ -149,7 +152,9 @@ function App() {
           },
         ],
       });
-      map.on('draw.update', function (e) {console.log(e)})
+      map.on("draw.update", function (e) {
+        console.log(e);
+      });
     });
   }, []);
   const splitPolygon = () => {
