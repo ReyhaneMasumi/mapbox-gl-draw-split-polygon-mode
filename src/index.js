@@ -1,8 +1,8 @@
 export { default as splitPolygonMode } from "./mode.js";
-export { default as DrawStyles } from "./customDrawStyles.js";
+// import { default as DrawStyles } from "./customDrawStyles.js";
 
-import { passing_draw_line_string } from "mapbox-gl-draw-passing-mode";
+// import { passing_draw_line_string } from "mapbox-gl-draw-passing-mode";
 
-export default {
-  splitPolygonMode,
-};
+// export default {
+//   splitPolygonMode,
+// };
