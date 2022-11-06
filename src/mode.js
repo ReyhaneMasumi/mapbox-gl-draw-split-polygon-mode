@@ -1,4 +1,7 @@
 import { events } from "@mapbox/mapbox-gl-draw/src/constants";
+
+import { passing_draw_line_string } from "mapbox-gl-draw-passing-mode";
+
 import lineIntersect from "@turf/line-intersect";
 import booleanDisjoint from "@turf/boolean-disjoint";
 import { lineString } from "@turf/helpers";
@@ -9,6 +12,11 @@ import difference from "@turf/difference";
 const SplitPolygonMode = {};
 
 SplitPolygonMode.onSetup = function () {
+  console.log(this);
+
+  const api = this._ctx.api;
+  api.options.modes["passing_draw_line_string"] = passing_draw_line_string;
+
   try {
     let main = this.getSelected()
       .filter((f) => f.type === "Polygon" || f.type === "MultiPolygon")
@@ -20,7 +28,7 @@ SplitPolygonMode.onSetup = function () {
       );
     }
 
-    this.changeMode("passing_mode_line_string", (cuttingLineString) => {
+    this.changeMode("passing_draw_line_string", (cuttingLineString) => {
       let allPoly = [];
       main.forEach((el) => {
         if (booleanDisjoint(el, cuttingLineString)) {

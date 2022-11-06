@@ -1,10 +1,20 @@
-import { splitPolygonMode } from "..";
+import { splitPolygonMode, DrawStyles } from "..";
 
 import "./index.css";
 
 let map;
 let draw;
 let drawBar;
+// const defaultStyle = map
+
+const splitPolygon = () => {
+  try {
+    draw?.changeMode("splitPolygonMode");
+  } catch (err) {
+    alert(err.message);
+    console.error(err);
+  }
+};
 
 class extendDrawBar {
   constructor(opt) {
@@ -83,9 +93,9 @@ map = new mapboxgl.Map({
 draw = new MapboxDraw({
   modes: {
     ...MapboxDraw.modes,
-    ...splitPolygonMode,
+    splitPolygonMode,
   },
-  styles: DrawStyles(defaultStyle),
+  // styles: DrawStyles(defaultStyle),
   userProperties: true,
 });
 
@@ -146,12 +156,3 @@ map.once("load", () => {
     console.log(e);
   });
 });
-
-const splitPolygon = () => {
-  try {
-    draw?.changeMode("splitPolygonMode");
-  } catch (err) {
-    alert(err.message);
-    console.error(err);
-  }
-};
