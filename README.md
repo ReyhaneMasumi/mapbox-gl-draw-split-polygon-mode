@@ -28,14 +28,14 @@ or use CDN:
 ## Usage
 
 ```js
-import mapboxGl from 'mapbox-gl';
-import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import SplitPolygonMode from 'mapbox-gl-draw-split-polygon-mode';
-import mapboxGlDrawPassingMode from 'mapbox-gl-draw-passing-mode';
+import mapboxGl from "mapbox-gl";
+import MapboxDraw from "@mapbox/mapbox-gl-draw";
+import SplitPolygonMode from "mapbox-gl-draw-split-polygon-mode";
+import mapboxGlDrawPassingMode from "mapbox-gl-draw-passing-mode";
 
 const map = new mapboxgl.Map({
-  container: 'map', // container id
-  style: 'mapbox://styles/mapbox/streets-v11',
+  container: "map", // container id
+  style: "mapbox://styles/mapbox/streets-v11",
   center: [-91.874, 42.76], // starting position
   zoom: 12, // starting zoom
 });
@@ -53,10 +53,19 @@ const draw = new MapboxDraw({
 map.addControl(draw);
 
 // when mode drawing should be activated
-draw.changeMode('splitPolygonMode');
+draw.changeMode("splitPolygonMode");
 ```
 
 ## [Example](https://github.com/ReyhaneMasumi/mapbox-gl-draw-split-polygon-mode/blob/main/demo/src/App.js)
+
+## Development
+
+use `vite` to run the demo:
+
+```bash
+cd demo
+npx vite --host
+```
 
 ## Acknowledgement
 
