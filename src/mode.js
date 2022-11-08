@@ -1,7 +1,5 @@
 import { events } from "@mapbox/mapbox-gl-draw/src/constants";
 
-import { passing_draw_line_string } from "mapbox-gl-draw-passing-mode";
-
 import lineIntersect from "@turf/line-intersect";
 import booleanDisjoint from "@turf/boolean-disjoint";
 import { lineString } from "@turf/helpers";
@@ -12,25 +10,29 @@ import difference from "@turf/difference";
 const SplitPolygonMode = {};
 
 SplitPolygonMode.onSetup = function () {
-  console.log(this);
+  let main = this.getSelected()
+    .filter((f) => f.type === "Polygon" || f.type === "MultiPolygon")
+    .map((f) => f.toGeoJSON());
 
-  const api = this._ctx.api;
-  api.options.modes["passing_draw_line_string"] = passing_draw_line_string;
+  if (main.length < 1) {
+    throw new Error(
+      "Please select a feature/features (Polygon or MultiPolygon) to split!"
+    );
+  }
 
-  try {
-    let main = this.getSelected()
-      .filter((f) => f.type === "Polygon" || f.type === "MultiPolygon")
-      .map((f) => f.toGeoJSON());
+  return {
+    main,
+  };
+};
 
-    if (main.length < 1) {
-      throw new Error(
-        "Please select a feature/features (Polygon or MultiPolygon) to split!"
-      );
-    }
+SplitPolygonMode.toDisplayFeatures = function (state, geojson, display) {
+  display(geojson);
 
-    this.changeMode("passing_draw_line_string", (cuttingLineString) => {
+  this.changeMode(
+    "splitPolygonMode__passing_draw_line_string",
+    (cuttingLineString) => {
       let allPoly = [];
-      main.forEach((el) => {
+      state.main.forEach((el) => {
         if (booleanDisjoint(el, cuttingLineString)) {
           throw new Error("Line must be outside of Polygon");
         } else {
@@ -45,18 +47,8 @@ SplitPolygonMode.onSetup = function () {
         }
       });
       this.fireUpdate(allPoly);
-    });
-  } catch (err) {
-    console.log("🚀 ~ file: index.js ~ line 45 ~ err", err);
-  }
-
-  // return {
-  //   main,
-  // };
-};
-
-SplitPolygonMode.toDisplayFeatures = function (state, geojson, display) {
-  display(geojson);
+    }
+  );
 };
 
 SplitPolygonMode.fireUpdate = function (newF) {

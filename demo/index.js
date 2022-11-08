@@ -1,4 +1,4 @@
-import { splitPolygonMode, DrawStyles } from "..";
+import SplitPolygonMode, { DrawStyles } from "..";
 
 import "./index.css";
 
@@ -92,8 +92,7 @@ map = new mapboxgl.Map({
 
 draw = new MapboxDraw({
   modes: {
-    ...MapboxDraw.modes,
-    splitPolygonMode,
+    ...SplitPolygonMode(MapboxDraw.modes),
   },
   // styles: DrawStyles(defaultStyle),
   userProperties: true,
@@ -152,7 +151,8 @@ map.once("load", () => {
       },
     ],
   });
+
   map.on("draw.update", function (e) {
-    console.log(e);
+    console.log("🚀 ~ file: index.js ~ line 158 ~ e", e);
   });
 });
