@@ -1,11 +1,11 @@
-import SplitPolygonMode, { DrawStyles } from "..";
+import SplitPolygonMode, { drawStyles as splitPolygonDrawStyles } from "..";
+import defaultDrawStyle from "https://unpkg.com/@mapbox/mapbox-gl-draw@1.3.0/src/lib/theme.js";
 
 import "./index.css";
 
 let map;
 let draw;
 let drawBar;
-// const defaultStyle = map
 
 const splitPolygon = () => {
   try {
@@ -94,9 +94,11 @@ draw = new MapboxDraw({
   modes: {
     ...SplitPolygonMode(MapboxDraw.modes),
   },
-  // styles: DrawStyles(defaultStyle),
+  styles: [...splitPolygonDrawStyles(defaultDrawStyle)],
   userProperties: true,
 });
+
+window.draw = draw;
 
 drawBar = new extendDrawBar({
   draw: draw,
@@ -108,6 +110,7 @@ drawBar = new extendDrawBar({
     },
   ],
 });
+
 map.once("load", () => {
   map.resize();
   map.addControl(drawBar, "top-right");

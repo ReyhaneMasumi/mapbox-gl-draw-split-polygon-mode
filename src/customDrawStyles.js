@@ -1,10 +1,12 @@
+import { passingModeName } from "./constants";
+
 const customDrawStyles = (defaultStyle) =>
   defaultStyle
     .map((style) => {
       if (style.id.endsWith("inactive")) {
         return {
           ...style,
-          filter: [...style.filter, ["!=", "mode", "passing_mode_line_string"]],
+          filter: [...style.filter, ["!=", "user_highlight", "yes"]],
         };
       }
 
@@ -12,13 +14,13 @@ const customDrawStyles = (defaultStyle) =>
     })
     .concat([
       {
-        id: "split-gl-draw-polygon-fill-active",
+        id: "splitpolygon-fill-active",
         type: "fill",
         filter: [
           "all",
           ["==", "active", "false"],
           ["==", "$type", "Polygon"],
-          ["==", "mode", "passing_mode_line_string"],
+          ["==", "user_highlight", "yes"],
         ],
         paint: {
           "fill-color": "#fbb03b",
@@ -27,13 +29,13 @@ const customDrawStyles = (defaultStyle) =>
         },
       },
       {
-        id: "split-gl-draw-polygon-stroke-active",
+        id: "splitpolygon-stroke-active",
         type: "line",
         filter: [
           "all",
           ["==", "active", "false"],
           ["==", "$type", "Polygon"],
-          ["==", "mode", "passing_mode_line_string"],
+          ["==", "user_highlight", "yes"],
         ],
         layout: {
           "line-cap": "round",

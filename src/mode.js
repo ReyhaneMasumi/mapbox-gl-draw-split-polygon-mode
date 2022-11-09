@@ -7,32 +7,23 @@ import lineOffset from "@turf/line-offset";
 import lineToPolygon from "@turf/line-to-polygon";
 import difference from "@turf/difference";
 
+import { passingModeName } from "./constants";
+
 const SplitPolygonMode = {};
 
 SplitPolygonMode.onSetup = function () {
+  console.log(this);
   let main = this.getSelected()
     .filter((f) => f.type === "Polygon" || f.type === "MultiPolygon")
     .map((f) => f.toGeoJSON());
 
-  if (main.length < 1) {
-    throw new Error(
-      "Please select a feature/features (Polygon or MultiPolygon) to split!"
-    );
-  }
+  // const api = this._ctx.api;
+  // api.options.modes["passing_draw_line_string"] = passing_draw_line_string;
 
-  return {
-    main,
-  };
-};
-
-SplitPolygonMode.toDisplayFeatures = function (state, geojson, display) {
-  display(geojson);
-
-  this.changeMode(
-    "splitPolygonMode__passing_draw_line_string",
-    (cuttingLineString) => {
+  setTimeout(() => {
+    this.changeMode(passingModeName, (cuttingLineString) => {
       let allPoly = [];
-      state.main.forEach((el) => {
+      main.forEach((el) => {
         if (booleanDisjoint(el, cuttingLineString)) {
           throw new Error("Line must be outside of Polygon");
         } else {
@@ -47,8 +38,25 @@ SplitPolygonMode.toDisplayFeatures = function (state, geojson, display) {
         }
       });
       this.fireUpdate(allPoly);
-    }
-  );
+    });
+  }, 0);
+
+  console.log("🚀 ~ file: mode.js ~ line 25 ~ main", main);
+
+  const f = this._ctx.api.get(main[0].id);
+  console.log("🚀 ~ file: mode.js ~ line 49 ~ f", f);
+
+  if (main?.[0]?.id)
+    this._ctx.store.setFeatureProperty(main[0].id, "highlight", "yes");
+
+  return {
+    main,
+  };
+};
+
+SplitPolygonMode.toDisplayFeatures = function (state, geojson, display) {
+  console.log("🚀 ~ file: mode.js ~ line 29 ~ geojson", geojson);
+  display(geojson);
 };
 
 SplitPolygonMode.fireUpdate = function (newF) {
@@ -56,6 +64,10 @@ SplitPolygonMode.fireUpdate = function (newF) {
     action: "SplitPolygon",
     features: newF,
   });
+};
+
+SplitPolygonMode.onStop = function () {
+  console.log("🚀 ~ file: mode.js ~ line 60 ~ onStop");
 };
 
 export default SplitPolygonMode;
