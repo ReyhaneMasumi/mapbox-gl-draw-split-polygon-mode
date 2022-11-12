@@ -4,7 +4,7 @@
 
 # mapbox-gl-draw-split-polygon-mode
 
-A custom mode for [MapboxGL-Draw](https://github.com/mapbox/mapbox-gl-draw) to split polygons.
+A custom mode for [MapboxGL-Draw](https://github.com/mapbox/mapbox-gl-draw) to split polygons based on a drawn lineString.
 
 > Check [mapbox-gl-draw-split-line-mode](https://github.com/ReyhaneMasumi/mapbox-gl-draw-split-line-mode) For splitting lineStrings.
 
@@ -15,13 +15,12 @@ A custom mode for [MapboxGL-Draw](https://github.com/mapbox/mapbox-gl-draw) to s
 ## Install
 
 ```bash
-npm install mapbox-gl-draw-split-polygon-mode mapbox-gl-draw-passing-mode
+npm install mapbox-gl-draw-split-polygon-mode
 ```
 
 or use CDN:
 
 ```html
-<script src="https://unpkg.com/mapbox-gl-draw-passing-mode"></script>
 <script src="https://unpkg.com/mapbox-gl-draw-split-polygon-mode"></script>
 ```
 
@@ -30,26 +29,25 @@ or use CDN:
 ```js
 import mapboxGl from "mapbox-gl";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
-import SplitPolygonMode from "mapbox-gl-draw-split-polygon-mode";
-import mapboxGlDrawPassingMode from "mapbox-gl-draw-passing-mode";
+import defaultDrawStyle from "https://unpkg.com/@mapbox/mapbox-gl-draw@1.3.0/src/lib/theme.js";
+
+import SplitPolygonMode, { drawStyles as splitPolygonDrawStyles } from "..";
 
 const map = new mapboxgl.Map({
-  container: "map", // container id
+  container: "map",
   style: "mapbox://styles/mapbox/streets-v11",
-  center: [-91.874, 42.76], // starting position
-  zoom: 12, // starting zoom
+  center: [-91.874, 42.76],
+  zoom: 12,
 });
 
-const draw = new MapboxDraw({
+draw = new MapboxDraw({
+  modes: {
+    ...SplitPolygonMode(MapboxDraw.modes),
+  },
+  styles: [...splitPolygonDrawStyles(defaultDrawStyle)],
   userProperties: true,
-  displayControlsDefault: false,
-  modes: Object.assign(MapboxDraw.modes, {
-    splitPolygonMode: SplitPolygonMode,
-    passing_mode_line_string: mapboxGlDrawPassingMode(
-      MapboxDraw.modes.draw_line_string
-    ),
-  }),
 });
+
 map.addControl(draw);
 
 // when mode drawing should be activated
