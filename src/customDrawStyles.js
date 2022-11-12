@@ -1,4 +1,9 @@
-import { passingModeName } from "./constants";
+import {
+  highlightPropertyName as _highlightPropertyName,
+  highlightColor,
+} from "./constants";
+
+const highlightPropertyName = `user_${_highlightPropertyName}`;
 
 const customDrawStyles = (defaultStyle) =>
   defaultStyle
@@ -6,7 +11,8 @@ const customDrawStyles = (defaultStyle) =>
       if (style.id.endsWith("inactive")) {
         return {
           ...style,
-          filter: [...style.filter, ["!=", "user_highlight", "yes"]],
+          /// here "!has" is used cause the gl-draw supported that instead of ['!', ['has', ...]]
+          filter: [...style.filter, ["!has", highlightPropertyName]],
         };
       }
 
@@ -20,11 +26,11 @@ const customDrawStyles = (defaultStyle) =>
           "all",
           ["==", "active", "false"],
           ["==", "$type", "Polygon"],
-          ["==", "user_highlight", "yes"],
+          ["has", highlightPropertyName],
         ],
         paint: {
-          "fill-color": "#fbb03b",
-          "fill-outline-color": "#fbb03b",
+          "fill-color": ["get", highlightPropertyName],
+          "fill-outline-color": ["get", highlightPropertyName],
           "fill-opacity": 0.1,
         },
       },
@@ -35,14 +41,14 @@ const customDrawStyles = (defaultStyle) =>
           "all",
           ["==", "active", "false"],
           ["==", "$type", "Polygon"],
-          ["==", "user_highlight", "yes"],
+          ["has", highlightPropertyName],
         ],
         layout: {
           "line-cap": "round",
           "line-join": "round",
         },
         paint: {
-          "line-color": "#fbb03b",
+          "line-color": ["get", highlightPropertyName],
           "line-dasharray": [0.2, 2],
           "line-width": 2,
         },

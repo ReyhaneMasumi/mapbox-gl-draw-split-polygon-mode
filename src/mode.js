@@ -7,18 +7,22 @@ import lineOffset from "@turf/line-offset";
 import lineToPolygon from "@turf/line-to-polygon";
 import difference from "@turf/difference";
 
-import { passingModeName } from "./constants";
+import {
+  passingModeName,
+  highlightPropertyName,
+  highlightColor as defaultHighlightColor,
+} from "./constants";
 
 const SplitPolygonMode = {};
 
-SplitPolygonMode.onSetup = function () {
-  console.log(this);
+SplitPolygonMode.onSetup = function (opt) {
+  const { highlightColor } = opt || {};
+
   let main = this.getSelected()
     .filter((f) => f.type === "Polygon" || f.type === "MultiPolygon")
     .map((f) => f.toGeoJSON());
 
-  // const api = this._ctx.api;
-  // api.options.modes["passing_draw_line_string"] = passing_draw_line_string;
+  const api = this._ctx.api;
 
   setTimeout(() => {
     this.changeMode(passingModeName, (cuttingLineString) => {
@@ -33,21 +37,23 @@ SplitPolygonMode.onSetup = function () {
             "piece-"
           );
           polycut.id = el.id;
-          this._ctx.api.add(polycut);
+          api.add(polycut);
           allPoly.push(polycut);
         }
       });
       this.fireUpdate(allPoly);
+
+      if (main?.[0]?.id)
+        api.setFeatureProperty(main[0].id, highlightPropertyName, undefined);
     });
   }, 0);
 
-  console.log("🚀 ~ file: mode.js ~ line 25 ~ main", main);
-
-  const f = this._ctx.api.get(main[0].id);
-  console.log("🚀 ~ file: mode.js ~ line 49 ~ f", f);
-
   if (main?.[0]?.id)
-    this._ctx.store.setFeatureProperty(main[0].id, "highlight", "yes");
+    api.setFeatureProperty(
+      main[0].id,
+      highlightPropertyName,
+      highlightColor ?? defaultHighlightColor
+    );
 
   return {
     main,
@@ -55,7 +61,6 @@ SplitPolygonMode.onSetup = function () {
 };
 
 SplitPolygonMode.toDisplayFeatures = function (state, geojson, display) {
-  console.log("🚀 ~ file: mode.js ~ line 29 ~ geojson", geojson);
   display(geojson);
 };
 
@@ -66,9 +71,9 @@ SplitPolygonMode.fireUpdate = function (newF) {
   });
 };
 
-SplitPolygonMode.onStop = function () {
-  console.log("🚀 ~ file: mode.js ~ line 60 ~ onStop");
-};
+// SplitPolygonMode.onStop = function ({ main }) {
+//   console.log("🚀 ~ file: mode.js ~ line 60 ~ onStop");
+// };
 
 export default SplitPolygonMode;
 
