@@ -25,26 +25,33 @@ SplitPolygonMode.onSetup = function (opt) {
   const api = this._ctx.api;
 
   setTimeout(() => {
-    this.changeMode(passingModeName, (cuttingLineString) => {
-      let allPoly = [];
-      main.forEach((el) => {
-        if (booleanDisjoint(el, cuttingLineString)) {
-          throw new Error("Line must be outside of Polygon");
-        } else {
-          let polycut = polygonCut(
-            el.geometry,
-            cuttingLineString.geometry,
-            "piece-"
-          );
-          polycut.id = el.id;
-          api.add(polycut);
-          allPoly.push(polycut);
-        }
-      });
-      this.fireUpdate(allPoly);
+    this.changeMode(passingModeName, {
+      onDraw: (cuttingLineString) => {
+        let allPoly = [];
+        main.forEach((el) => {
+          if (booleanDisjoint(el, cuttingLineString)) {
+            throw new Error("Line must be outside of Polygon");
+          } else {
+            let polycut = polygonCut(
+              el.geometry,
+              cuttingLineString.geometry,
+              "piece-"
+            );
+            polycut.id = el.id;
+            api.add(polycut);
+            allPoly.push(polycut);
+          }
+        });
 
-      if (main?.[0]?.id)
-        api.setFeatureProperty(main[0].id, highlightPropertyName, undefined);
+        this.fireUpdate(allPoly);
+
+        if (main?.[0]?.id)
+          api.setFeatureProperty(main[0].id, highlightPropertyName, undefined);
+      },
+      onCancel: () => {
+        if (main?.[0]?.id)
+          api.setFeatureProperty(main[0].id, highlightPropertyName, undefined);
+      },
     });
   }, 0);
 
