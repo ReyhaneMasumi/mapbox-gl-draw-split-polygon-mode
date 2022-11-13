@@ -14,22 +14,15 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 18
-      - name: Bundle 📦
-        run: |
-          npm install
-          npm run build
+      # - name: Bundle 📦
+      #   run: |
+      #     npm install
+      #     npm run build
       - name: Install and Build 🔧
+        working-directory: demo
         run: |
           npm install
           npm run build
-        working-directory: demo
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@3.7.1
-        with:
-          GITHUB_TOKEN: ${{ secrets.GH_ACTIONS }}
-          BRANCH: gh-pages # The branch the action should deploy to.
-          FOLDER: demo/build # The folder the action should deploy.
-          CLEAN: true # Automatically remove deleted files from the deploy branch
       - name: Publish 📤
         uses: JS-DevTools/npm-publish@v1
         with:
