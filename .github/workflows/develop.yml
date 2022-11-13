@@ -14,13 +14,19 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 18
+      - name: Bundle 📦
+        run: |
+          npm install
+          npm run build
       - name: Install and Build 🔧
         working-directory: demo
-        run: npx vite build
+        run: |
+          npm install
+          npm run build
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@3.7.1
         with:
           GITHUB_TOKEN: ${{ secrets.GH_ACTIONS }}
           BRANCH: gh-pages # The branch the action should deploy to.
-          FOLDER: demo/dist # The folder the action should deploy.
+          FOLDER: demo/build # The folder the action should deploy.
           CLEAN: true # Automatically remove deleted files from the deploy branch
