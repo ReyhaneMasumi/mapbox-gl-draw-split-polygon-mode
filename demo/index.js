@@ -9,7 +9,7 @@ let drawBar;
 
 const splitPolygon = () => {
   try {
-    draw?.changeMode("splitPolygonMode");
+    draw?.changeMode("split_polygon");
   } catch (err) {
     alert(err.message);
     console.error(err);
