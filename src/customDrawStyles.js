@@ -1,7 +1,4 @@
-import {
-  highlightPropertyName as _highlightPropertyName,
-  highlightColor,
-} from "./constants";
+import { highlightPropertyName as _highlightPropertyName } from "./constants";
 
 const highlightPropertyName = `user_${_highlightPropertyName}`;
 

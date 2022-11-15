@@ -20,7 +20,7 @@ jobs:
           npm run build
       - name: Install and Build Demo 🔧
         working-directory: demo
-        run: npx vite build
+        run: npx vite build --base "/mapbox-gl-draw-split-polygon-mode/"
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:

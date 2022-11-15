@@ -9,7 +9,15 @@ let drawBar;
 
 const splitPolygon = () => {
   try {
-    draw?.changeMode("split_polygon");
+    draw?.changeMode(
+      "split_polygon",
+      /** Default option vlaues: */
+      {
+        highlightColor: "#222",
+        lineWidth: 0.001,
+        lineWidthUnit: "kilometers",
+      }
+    );
   } catch (err) {
     alert(err.message);
     console.error(err);
