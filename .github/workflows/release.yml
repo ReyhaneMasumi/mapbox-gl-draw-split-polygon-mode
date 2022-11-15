@@ -22,7 +22,7 @@ jobs:
         working-directory: demo
         run: npx vite build
       - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@4
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
           GITHUB_TOKEN: ${{ secrets.GH_ACTIONS }}
           BRANCH: gh-pages # The branch the action should deploy to.
