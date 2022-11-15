@@ -56,7 +56,7 @@ map.addControl(draw);
 /// Activate the mode
 draw.changeMode("split_polygon");
 
-/// you can modify the behaviour using these options:
+/// you can modify the behavior using these options:
 draw.changeMode(
   "split_polygon",
   /** Default option vlaues: */
