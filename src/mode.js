@@ -2,21 +2,21 @@ import { events } from "@mapbox/mapbox-gl-draw/src/constants";
 
 import lineIntersect from "@turf/line-intersect";
 import booleanDisjoint from "@turf/boolean-disjoint";
-import { lineString } from "@turf/helpers";
 import lineOffset from "@turf/line-offset";
 import lineToPolygon from "@turf/line-to-polygon";
 import difference from "@turf/difference";
+import { lineString } from "@turf/helpers";
 
 import {
   passingModeName,
   highlightPropertyName,
-  highlightColor as defaultHighlightColor,
+  defaultOptions,
 } from "./constants";
 
 const SplitPolygonMode = {};
 
 SplitPolygonMode.onSetup = function (opt) {
-  const { highlightColor } = opt || {};
+  const { highlightColor, lineWidth, lineWidthUnit } = opt || {};
 
   let main = this.getSelected()
     .filter((f) => f.type === "Polygon" || f.type === "MultiPolygon")
@@ -35,7 +35,11 @@ SplitPolygonMode.onSetup = function (opt) {
             let polycut = polygonCut(
               el.geometry,
               cuttingLineString.geometry,
-              "piece-"
+              "piece-",
+              {
+                line_width: lineWidth,
+                line_width_unit: lineWidthUnit,
+              }
             );
             polycut.id = el.id;
             api.add(polycut);
@@ -59,7 +63,7 @@ SplitPolygonMode.onSetup = function (opt) {
     api.setFeatureProperty(
       main[0].id,
       highlightPropertyName,
-      highlightColor ?? defaultHighlightColor
+      highlightColor || defaultOptions.highlightColor
     );
 
   return {
@@ -84,15 +88,17 @@ SplitPolygonMode.fireUpdate = function (newF) {
 
 export default SplitPolygonMode;
 
-// from https://gis.stackexchange.com/a/344277/145409
-function polygonCut(poly, line, idPrefix) {
-  const THICK_LINE_UNITS = "kilometers";
-  const THICK_LINE_WIDTH = 0.001;
-  var i, j, intersectPoints, forCut, forSelect;
-  var thickLineString, thickLinePolygon, clipped;
-  var polyCoords = [];
-  var offsetLine = [];
-  var retVal = null;
+// Adopted from https://gis.stackexchange.com/a/344277/145409
+function polygonCut(poly, line, idPrefix, options) {
+  const {
+    line_width = defaultOptions.line_width,
+    line_width_unit = defaultOptions.line_width_unit,
+  } = options || {};
+
+  const offsetLine = [];
+  const retVal = null;
+  let i, j, intersectPoints, forCut, forSelect;
+  let thickLineString, thickLinePolygon, clipped;
 
   if (
     (poly.type != "Polygon" && poly.type != "MultiPolygon") ||
@@ -114,17 +120,18 @@ function polygonCut(poly, line, idPrefix) {
     return retVal;
   }
 
-  offsetLine[0] = lineOffset(line, THICK_LINE_WIDTH, {
-    units: THICK_LINE_UNITS,
+  offsetLine[0] = lineOffset(line, line_width, {
+    units: line_width_unit,
   });
-  offsetLine[1] = lineOffset(line, -THICK_LINE_WIDTH, {
-    units: THICK_LINE_UNITS,
+
+  offsetLine[1] = lineOffset(line, -line_width, {
+    units: line_width_unit,
   });
 
   for (i = 0; i <= 1; i++) {
     forCut = i;
     forSelect = (i + 1) % 2;
-    polyCoords = [];
+    const polyCoords = [];
     for (j = 0; j < line.coordinates.length; j++) {
       polyCoords.push(line.coordinates[j]);
     }
@@ -137,5 +144,6 @@ function polygonCut(poly, line, idPrefix) {
     thickLinePolygon = lineToPolygon(thickLineString);
     clipped = difference(poly, thickLinePolygon);
   }
+
   return clipped;
 }

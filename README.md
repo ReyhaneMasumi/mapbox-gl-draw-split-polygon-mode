@@ -53,16 +53,22 @@ draw = new MapboxDraw({
 
 map.addControl(draw);
 
-// when mode drawing should be activated
+/// Activate the mode
 draw.changeMode("split_polygon");
 
-/// or pass the color for the selected feature
-draw.changeMode("split_polygon", {
-  highlightColor: "#D00D00", /// default is "#222"
-});
+/// you can modify the behaviour using these options:
+draw.changeMode(
+  "split_polygon",
+  /** Default option vlaues: */
+  {
+    highlightColor: "#222",
+    lineWidth: 0.001,
+    lineWidthUnit: "kilometers",
+  }
+);
 ```
 
-the syntax used here is because `mapbox-gl-draw-split-polygon-mode` needs to modify the modes object and also the `styles` object passed to the `mapbox-gl-draw`. the reason is this package uses [`mapbox-gl-draw-passing-mode`](https://github.com/mhsattarian/mapbox-gl-draw-passing-mode) underneath (and adds this to modes object) and needs to modify the styles to show the selected feature.
+> The syntax used here is because `mapbox-gl-draw-split-polygon-mode` needs to modify the modes object and also the `styles` object passed to the `mapbox-gl-draw`. the reason is this package uses [`mapbox-gl-draw-passing-mode`](https://github.com/mhsattarian/mapbox-gl-draw-passing-mode) underneath (and adds this to modes object) and needs to modify the styles to show the selected feature.
 
 also, take a look at the [example](https://github.com/ReyhaneMasumi/mapbox-gl-draw-split-polygon-mode/blob/main/demo/src/App.js) in the `demo` directory.
 
