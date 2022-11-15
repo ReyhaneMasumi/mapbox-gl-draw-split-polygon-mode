@@ -18,7 +18,7 @@ jobs:
         run: |
           npm install
           npm run build
-      - name: Install and Build 🔧
+      - name: Install and Build Demo 🔧
         working-directory: demo
         run: npx vite build
       - name: Deploy 🚀
