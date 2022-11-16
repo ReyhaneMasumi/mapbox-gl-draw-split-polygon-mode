@@ -1,4 +1,4 @@
-import { events } from "@mapbox/mapbox-gl-draw/src/constants";
+import { geojsonTypes, events } from "@mapbox/mapbox-gl-draw/src/constants";
 
 import lineIntersect from "@turf/line-intersect";
 import booleanDisjoint from "@turf/boolean-disjoint";
@@ -7,15 +7,18 @@ import lineToPolygon from "@turf/line-to-polygon";
 import difference from "@turf/difference";
 import { lineString } from "@turf/helpers";
 
-import { modeName, highlightPropertyName, defaultOptions } from "./constants";
+import { highlightPropertyName, defaultOptions } from "./constants";
 
 const SplitPolygonMode = {};
 
 SplitPolygonMode.onSetup = function (opt) {
   const { highlightColor, lineWidth, lineWidthUnit } = opt || {};
 
-  let main = this.getSelected()
-    .filter((f) => f.type === "Polygon" || f.type === "MultiPolygon")
+  const main = this.getSelected()
+    .filter(
+      (f) =>
+        f.type === geojsonTypes.POLYGON || f.type === geojsonTypes.MULTI_POLYGON
+    )
     .map((f) => f.toGeoJSON());
 
   const api = this._ctx.api;
@@ -25,15 +28,14 @@ SplitPolygonMode.onSetup = function (opt) {
   setTimeout(() => {
     this.changeMode(passingModeName, {
       onDraw: (cuttingLineString) => {
-        let allPoly = [];
+        const allPoly = [];
         main.forEach((el) => {
           if (booleanDisjoint(el, cuttingLineString)) {
             throw new Error("Line must be outside of Polygon");
           } else {
-            let polycut = polygonCut(
+            const polycut = polygonCut(
               el.geometry,
               cuttingLineString.geometry,
-              "piece-",
               {
                 line_width: lineWidth,
                 line_width_unit: lineWidthUnit,
@@ -87,7 +89,7 @@ SplitPolygonMode.fireUpdate = function (newF) {
 export default SplitPolygonMode;
 
 // Adopted from https://gis.stackexchange.com/a/344277/145409
-function polygonCut(poly, line, idPrefix, options) {
+function polygonCut(poly, line, options) {
   const {
     line_width = defaultOptions.line_width,
     line_width_unit = defaultOptions.line_width_unit,
@@ -99,29 +101,27 @@ function polygonCut(poly, line, idPrefix, options) {
   let thickLineString, thickLinePolygon, clipped;
 
   if (
-    (poly.type != "Polygon" && poly.type != "MultiPolygon") ||
-    line.type != "LineString"
+    (poly.type != geojsonTypes.POLYGON &&
+      poly.type != geojsonTypes.MULTI_POLYGON) ||
+    line.type != geojsonTypes.LINE_STRING
   ) {
     return retVal;
   }
 
-  if (typeof idPrefix === "undefined") {
-    idPrefix = "";
-  }
-
-  intersectPoints = lineIntersect(poly, line);
-  if (intersectPoints.features.length == 0) {
-    return retVal;
-  }
-
+  /// if line and polygon don't intersect return.
   if (booleanDisjoint(line, poly)) {
     return retVal;
   }
 
+  intersectPoints = lineIntersect(poly, line);
+  if (intersectPoints.features.length === 0) {
+    return retVal;
+  }
+
+  /// Creating two new lines at sides of the splitting lineString
   offsetLine[0] = lineOffset(line, line_width, {
     units: line_width_unit,
   });
-
   offsetLine[1] = lineOffset(line, -line_width, {
     units: line_width_unit,
   });
