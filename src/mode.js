@@ -12,7 +12,7 @@ import { highlightPropertyName, defaultOptions } from "./constants";
 const SplitPolygonMode = {};
 
 SplitPolygonMode.onSetup = function (opt) {
-  const { highlightColor, lineWidth, lineWidthUnit } = opt || {};
+  const { highlightColor = defaultOptions.highlightColor, lineWidth = defaultOptions.lineWidth, lineWidthUnit = defaultOptions.lineWidth } = opt || {};
 
   const main = this.getSelected()
     .filter(
@@ -63,7 +63,7 @@ SplitPolygonMode.onSetup = function (opt) {
     api.setFeatureProperty(
       main[0].id,
       highlightPropertyName,
-      highlightColor || defaultOptions.highlightColor
+      highlightColor
     );
 
   return {
