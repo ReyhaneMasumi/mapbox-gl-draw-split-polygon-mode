@@ -19,7 +19,7 @@ SplitPolygonMode.onSetup = function (opt) {
   const {
     highlightColor = defaultOptions.highlightColor,
     lineWidth = defaultOptions.lineWidth,
-    lineWidthUnit = defaultOptions.lineWidth,
+    lineWidthUnit = defaultOptions.lineWidthUnit,
   } = opt || {};
 
   const main = this.getSelected()
