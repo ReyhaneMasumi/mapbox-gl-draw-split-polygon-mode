@@ -1,4 +1,7 @@
-import { highlightPropertyName as _highlightPropertyName } from "./constants";
+import {
+  modeName,
+  highlightPropertyName as _highlightPropertyName,
+} from "./constants";
 
 const highlightPropertyName = `user_${_highlightPropertyName}`;
 
@@ -17,7 +20,7 @@ const customDrawStyles = (defaultStyle) =>
     })
     .concat([
       {
-        id: "splitpolygon-fill-active",
+        id: `${modeName}-fill-active`,
         type: "fill",
         filter: [
           "all",
@@ -32,7 +35,7 @@ const customDrawStyles = (defaultStyle) =>
         },
       },
       {
-        id: "splitpolygon-stroke-active",
+        id: `${modeName}-stroke-active`,
         type: "line",
         filter: [
           "all",

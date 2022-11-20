@@ -19,6 +19,9 @@
     "geojson"
   ],
   "author": "Reyhane Masumi",
+  "contributors": [
+    "Mohammad H. Sattarian"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/ReyhaneMasumi/mapbox-gl-draw-split-polygon-mode/issues"
