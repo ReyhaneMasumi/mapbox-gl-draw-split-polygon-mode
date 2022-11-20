@@ -7,11 +7,7 @@ import lineToPolygon from "@turf/line-to-polygon";
 import difference from "@turf/difference";
 import { lineString } from "@turf/helpers";
 
-import {
-  passingModeName,
-  highlightPropertyName,
-  defaultOptions,
-} from "./constants";
+import { modeName, highlightPropertyName, defaultOptions } from "./constants";
 
 const SplitPolygonMode = {};
 
@@ -24,6 +20,8 @@ SplitPolygonMode.onSetup = function (opt) {
 
   const api = this._ctx.api;
 
+  /// `onSetup` job should complete for this mode to work.
+  /// so `setTimeout` is used to bupass mode change after `onSetup` is done executing.
   setTimeout(() => {
     this.changeMode(passingModeName, {
       onDraw: (cuttingLineString) => {
