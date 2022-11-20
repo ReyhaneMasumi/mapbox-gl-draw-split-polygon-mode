@@ -7,7 +7,11 @@ import lineToPolygon from "@turf/line-to-polygon";
 import difference from "@turf/difference";
 import { lineString } from "@turf/helpers";
 
-import { highlightPropertyName, defaultOptions } from "./constants";
+import {
+  passingModeName,
+  highlightPropertyName,
+  defaultOptions,
+} from "./constants";
 
 const SplitPolygonMode = {};
 
