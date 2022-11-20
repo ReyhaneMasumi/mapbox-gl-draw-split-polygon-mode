@@ -12,7 +12,11 @@ import { highlightPropertyName, defaultOptions } from "./constants";
 const SplitPolygonMode = {};
 
 SplitPolygonMode.onSetup = function (opt) {
-  const { highlightColor = defaultOptions.highlightColor, lineWidth = defaultOptions.lineWidth, lineWidthUnit = defaultOptions.lineWidth } = opt || {};
+  const {
+    highlightColor = defaultOptions.highlightColor,
+    lineWidth = defaultOptions.lineWidth,
+    lineWidthUnit = defaultOptions.lineWidth,
+  } = opt || {};
 
   const main = this.getSelected()
     .filter(
@@ -60,11 +64,7 @@ SplitPolygonMode.onSetup = function (opt) {
   }, 0);
 
   if (main?.[0]?.id)
-    api.setFeatureProperty(
-      main[0].id,
-      highlightPropertyName,
-      highlightColor
-    );
+    api.setFeatureProperty(main[0].id, highlightPropertyName, highlightColor);
 
   return {
     main,
@@ -90,10 +90,7 @@ export default SplitPolygonMode;
 
 // Adopted from https://gis.stackexchange.com/a/344277/145409
 function polygonCut(poly, line, options) {
-  const {
-    line_width = defaultOptions.line_width,
-    line_width_unit = defaultOptions.line_width_unit,
-  } = options || {};
+  const { line_width, line_width_unit } = options || {};
 
   const offsetLine = [];
   const retVal = null;
@@ -101,6 +98,8 @@ function polygonCut(poly, line, options) {
   let thickLineString, thickLinePolygon, clipped;
 
   if (
+    typeof line_width === "undefined" ||
+    typeof line_width_unit === "undefined" ||
     (poly.type != geojsonTypes.POLYGON &&
       poly.type != geojsonTypes.MULTI_POLYGON) ||
     line.type != geojsonTypes.LINE_STRING
