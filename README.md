@@ -70,7 +70,7 @@ draw.changeMode(
 
 > The syntax used here is because `mapbox-gl-draw-split-polygon-mode` needs to modify the modes object and also the `styles` object passed to the `mapbox-gl-draw`. the reason is this package uses [`mapbox-gl-draw-passing-mode`](https://github.com/mhsattarian/mapbox-gl-draw-passing-mode) underneath (and adds this to modes object) and needs to modify the styles to show the selected feature.
 
-also, take a look at the [example](https://github.com/ReyhaneMasumi/mapbox-gl-draw-split-polygon-mode/blob/main/demo/src/App.js) in the `demo` directory.
+also, take a look at the [**example**](https://github.com/ReyhaneMasumi/mapbox-gl-draw-split-polygon-mode/blob/main/demo/src/App.js) in the `demo` directory.
 
 ### note
 
