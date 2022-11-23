@@ -29,7 +29,7 @@ or use CDN:
 ```js
 import mapboxGl from "mapbox-gl";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
-import defaultDrawStyle from "https://unpkg.com/@mapbox/mapbox-gl-draw@1.3.0/src/lib/theme.js";
+import defaultDrawStyle from "@mapbox/mapbox-gl-draw/src/lib/theme.js";
 
 import SplitPolygonMode, {
   drawStyles as splitPolygonDrawStyles,
