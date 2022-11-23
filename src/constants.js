@@ -10,6 +10,9 @@ export const highlightPropertyName = `${modeName}_highlight`;
 
 export const defaultOptions = {
   highlightColor: "#222",
-  lineWidth: 0.001,
+  lineWidth: 0,
   lineWidthUnit: "kilometers",
+  onSelectFeatureRequest() {
+    throw new Error("no Feature is selected to split.");
+  },
 };

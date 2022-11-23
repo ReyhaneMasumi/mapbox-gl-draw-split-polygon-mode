@@ -1,5 +1,9 @@
-import SplitPolygonMode, { drawStyles as splitPolygonDrawStyles } from "..";
+import SelectFeatureMode, {
+  drawStyles as selectFeatureDrawStyles,
+} from "mapbox-gl-draw-select-mode";
 import defaultDrawStyle from "https://unpkg.com/@mapbox/mapbox-gl-draw@1.3.0/src/lib/theme.js";
+
+import SplitPolygonMode, { drawStyles as splitPolygonDrawStyles } from "..";
 
 const { MODE } = import.meta.env;
 
@@ -10,20 +14,22 @@ let draw;
 let drawBar;
 
 const splitPolygon = () => {
-  try {
-    draw?.changeMode(
-      "split_polygon",
-      /** Default option vlaues: */
-      {
-        highlightColor: "#222",
-        lineWidth: 0.001,
-        lineWidthUnit: "kilometers",
+  draw.changeMode("select_feature", {
+    selectHighlightColor: "yellow",
+    onSelect(selectedFeatureID) {
+      try {
+        draw?.changeMode("split_polygon", {
+          featureIds: [selectedFeatureID],
+          /** Default option vlaues: */
+          highlightColor: "#222",
+          lineWidth: 0.001,
+          lineWidthUnit: "kilometers",
+        });
+      } catch (err) {
+        console.error(err);
       }
-    );
-  } catch (err) {
-    alert(err.message);
-    console.error(err);
-  }
+    },
+  });
 };
 
 class extendDrawBar {
@@ -105,9 +111,11 @@ map = new mapboxgl.Map({
 
 draw = new MapboxDraw({
   modes: {
-    ...SplitPolygonMode(MapboxDraw.modes),
+    ...SplitPolygonMode(SelectFeatureMode(MapboxDraw.modes)),
   },
-  styles: [...splitPolygonDrawStyles(defaultDrawStyle)],
+  styles: [
+    ...splitPolygonDrawStyles(selectFeatureDrawStyles(defaultDrawStyle)),
+  ],
   userProperties: true,
 });
 
@@ -131,9 +139,9 @@ map.once("load", () => {
     type: "FeatureCollection",
     features: [
       {
+        id: "example",
         type: "Feature",
         properties: {},
-        id: "example-id",
         geometry: {
           coordinates: [
             [
