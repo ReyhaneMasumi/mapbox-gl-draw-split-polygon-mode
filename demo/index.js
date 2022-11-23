@@ -1,6 +1,8 @@
 import SplitPolygonMode, { drawStyles as splitPolygonDrawStyles } from "..";
 import defaultDrawStyle from "https://unpkg.com/@mapbox/mapbox-gl-draw@1.3.0/src/lib/theme.js";
 
+const { MODE } = import.meta.env;
+
 import "./index.css";
 
 let map;
@@ -78,7 +80,10 @@ if (mapboxgl.getRTLTextPluginStatus() === "unavailable")
 
 map = new mapboxgl.Map({
   container: "map",
-  style: `https://map.ir/vector/styles/main/mapir-xyz-light-style.json`,
+  style:
+    MODE === "development"
+      ? { version: 8, sources: {}, layers: [] }
+      : `https://map.ir/vector/styles/main/mapir-xyz-light-style.json`,
   center: [51.3857, 35.6102],
   zoom: 7.78,
   pitch: 0,
