@@ -1,3 +1,4 @@
+import { drawStyles as selectFeatureDrawStyles } from "mapbox-gl-draw-select-mode";
 import {
   modeName,
   highlightPropertyName as _highlightPropertyName,
@@ -6,7 +7,7 @@ import {
 const highlightPropertyName = `user_${_highlightPropertyName}`;
 
 const customDrawStyles = (defaultStyle) =>
-  defaultStyle
+  selectFeatureDrawStyles(defaultStyle)
     .map((style) => {
       if (style.id.endsWith("inactive")) {
         return {

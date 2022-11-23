@@ -1,3 +1,5 @@
+import polygonSplitter from "polygon-splitter";
+
 import { geojsonTypes, events } from "@mapbox/mapbox-gl-draw/src/constants";
 
 import lineIntersect from "@turf/line-intersect";
@@ -5,6 +7,9 @@ import booleanDisjoint from "@turf/boolean-disjoint";
 import lineOffset from "@turf/line-offset";
 import lineToPolygon from "@turf/line-to-polygon";
 import difference from "@turf/difference";
+// import polygonToLine from "@turf/polygon-to-line";
+// import union from "@turf/union";
+// import polygonize from "@turf/polygonize";
 import { lineString } from "@turf/helpers";
 
 import {
@@ -22,31 +27,73 @@ SplitPolygonMode.onSetup = function (opt) {
     lineWidthUnit = defaultOptions.lineWidthUnit,
   } = opt || {};
 
-  const main = this.getSelected()
+  const state = {
+    options: {
+      highlightColor,
+    },
+    selectedFeatures: null,
+  };
+
+  /// `onSetup` job should complete for this mode to work.
+  /// so `setTimeout` is used to bupass mode change after `onSetup` is done executing.
+  setTimeout(this.magick.bind(this, state), 0);
+
+  console.log("SplitPolygonMode.onSetup");
+
+  return state;
+};
+
+SplitPolygonMode.magick = function (state) {
+  console.log("SplitPolygonMode.magick");
+
+  const selected = this.getSelected()
     .filter(
       (f) =>
         f.type === geojsonTypes.POLYGON || f.type === geojsonTypes.MULTI_POLYGON
     )
     .map((f) => f.toGeoJSON());
 
+  state.selectedFeatures = selected;
+
   const api = this._ctx.api;
 
-  /// `onSetup` job should complete for this mode to work.
-  /// so `setTimeout` is used to bupass mode change after `onSetup` is done executing.
-  setTimeout(() => {
+  const _this = this;
+  if (selected.length === 0) {
+    this.changeMode("select_feature", {
+      onSelect(selectedFeatureID) {
+        const f = api.get(selectedFeatureID);
+        selected.push(f);
+        console.log("🚀 ~ file: mode.js ~ line 64 ~ onSelect ~ onSelect");
+        SplitPolygonMode.drawAndSplit.call(_this, state);
+      },
+    });
+  } else {
+    SplitPolygonMode.drawAndSplit.call(_this, state);
+  }
+};
+
+SplitPolygonMode.drawAndSplit = function (state) {
+  console.log("🚀 ~ file: mode.js ~ line 75 ~ drawAndSplit ~ state", state);
+  const api = this._ctx.api;
+
+  try {
     this.changeMode(passingModeName, {
       onDraw: (cuttingLineString) => {
+        console.log(
+          "🚀 ~ file: mode.js ~ line 81 ~ cuttingLineString",
+          cuttingLineString
+        );
         const allPoly = [];
-        main.forEach((el) => {
+        state.selectedFeatures.forEach((el) => {
           if (booleanDisjoint(el, cuttingLineString)) {
             throw new Error("Line must be outside of Polygon");
           } else {
-            const polycut = polygonCut(
+            const polycut = polygonCut2(
               el.geometry,
               cuttingLineString.geometry,
               {
-                line_width: lineWidth,
-                line_width_unit: lineWidthUnit,
+                // line_width: lineWidth,
+                // line_width_unit: lineWidthUnit,
               }
             );
             polycut.id = el.id;
@@ -57,22 +104,25 @@ SplitPolygonMode.onSetup = function (opt) {
 
         this.fireUpdate(allPoly);
 
-        if (main?.[0]?.id)
-          api.setFeatureProperty(main[0].id, highlightPropertyName, undefined);
+        if (state.selectedFeatures?.[0]?.id)
+          api.setFeatureProperty(
+            state.selectedFeatures[0].id,
+            highlightPropertyName,
+            undefined
+          );
       },
       onCancel: () => {
-        if (main?.[0]?.id)
-          api.setFeatureProperty(main[0].id, highlightPropertyName, undefined);
+        if (state.selectedFeatures?.[0]?.id)
+          api.setFeatureProperty(
+            state.selectedFeatures[0].id,
+            highlightPropertyName,
+            undefined
+          );
       },
     });
-  }, 0);
-
-  if (main?.[0]?.id)
-    api.setFeatureProperty(main[0].id, highlightPropertyName, highlightColor);
-
-  return {
-    main,
-  };
+  } catch (err) {
+    console.log("🚀 ~ file: mode.js ~ line 116 ~ err", err);
+  }
 };
 
 SplitPolygonMode.toDisplayFeatures = function (state, geojson, display) {
@@ -86,9 +136,9 @@ SplitPolygonMode.fireUpdate = function (newF) {
   });
 };
 
-// SplitPolygonMode.onStop = function ({ main }) {
-//   console.log("🚀 ~ file: mode.js ~ line 60 ~ onStop");
-// };
+SplitPolygonMode.onStop = function (state) {
+  console.log("🚀 ~ file: mode.js ~ line 60 ~ onStop ~ state", state);
+};
 
 export default SplitPolygonMode;
 
@@ -122,10 +172,10 @@ function polygonCut(poly, line, options) {
   }
 
   /// Creating two new lines at sides of the splitting lineString
-  offsetLine[0] = lineOffset(line, line_width, {
+  offsetLine[0] = lineOffset(line, line_width / 2, {
     units: line_width_unit,
   });
-  offsetLine[1] = lineOffset(line, -line_width, {
+  offsetLine[1] = lineOffset(line, -line_width / 2, {
     units: line_width_unit,
   });
 
@@ -147,4 +197,8 @@ function polygonCut(poly, line, options) {
   }
 
   return clipped;
+}
+
+function polygonCut2(poly, line) {
+  return polygonSplitter(poly, line);
 }

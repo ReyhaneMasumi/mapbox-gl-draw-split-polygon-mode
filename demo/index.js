@@ -114,7 +114,7 @@ drawBar = new extendDrawBar({
     {
       on: "click",
       action: splitPolygon,
-      classes: ["split-icon"],
+      classes: ["split-polygon"],
     },
   ],
 });
