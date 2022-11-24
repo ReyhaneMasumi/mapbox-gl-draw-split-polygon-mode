@@ -13,24 +13,34 @@ let map;
 let draw;
 let drawBar;
 
-const splitPolygon = () => {
-  draw.changeMode("select_feature", {
-    selectHighlightColor: "yellow",
-    onSelect(selectedFeatureID) {
-      try {
-        draw?.changeMode("split_polygon", {
-          featureIds: [selectedFeatureID],
-          /** Default option vlaues: */
-          highlightColor: "#222",
-          lineWidth: 0.001,
-          lineWidthUnit: "kilometers",
-        });
-      } catch (err) {
-        console.error(err);
-      }
-    },
-  });
-};
+function goSplitMode(selectedFeatureIDs) {
+  try {
+    draw?.changeMode("split_polygon", {
+      featureIds: selectedFeatureIDs,
+      /** Default option vlaues: */
+      highlightColor: "#222",
+      // lineWidth: 0.001,
+      // lineWidthUnit: "kilometers",
+    });
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+function splitPolygon() {
+  const selectedFeatureIDs = draw.getSelectedIds();
+
+  if (selectedFeatureIDs.length > 0) {
+    goSplitMode(selectedFeatureIDs);
+  } else {
+    draw.changeMode("select_feature", {
+      selectHighlightColor: "yellow",
+      onSelect(selectedFeatureID) {
+        goSplitMode([selectedFeatureID]);
+      },
+    });
+  }
+}
 
 class extendDrawBar {
   constructor(opt) {

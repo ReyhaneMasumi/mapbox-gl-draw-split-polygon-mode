@@ -52,11 +52,6 @@ SplitPolygonMode.onSetup = function (opt) {
     return onSelectFeatureRequest();
   }
 
-  console.log(
-    "🚀 ~ file: mode.js ~ line 74 ~ featuresToSplit",
-    featuresToSplit
-  );
-
   const state = {
     options: {
       highlightColor,
@@ -64,25 +59,20 @@ SplitPolygonMode.onSetup = function (opt) {
       lineWidthUnit,
     },
     featuresToSplit,
+    api,
   };
 
   /// `onSetup` job should complete for this mode to work.
   /// so `setTimeout` is used to bupass mode change after `onSetup` is done executing.
   setTimeout(this.drawAndSplit.bind(this, state), 0);
-
-  // if (main?.[0]?.id)
-  //   api.setFeatureProperty(main[0].id, highlightPropertyName, highlightColor);
+  this.highlighFeatures(state);
 
   return state;
 };
 
 SplitPolygonMode.drawAndSplit = function (state) {
-  const api = this._ctx.api;
-
-  console.log(
-    "🚀 ~ file: mode.js ~ line 109 ~ state.featuresToSplit.forEach ~ state.featuresToSplit",
-    state.featuresToSplit
-  );
+  const { api, options } = state;
+  const { lineWidth, lineWidthUnit } = options;
 
   try {
     this.changeMode(passingModeName, {
@@ -90,14 +80,21 @@ SplitPolygonMode.drawAndSplit = function (state) {
         const allPoly = [];
         state.featuresToSplit.forEach((el) => {
           if (booleanDisjoint(el, cuttingLineString)) {
-            throw new Error("Line must be outside of Polygon");
+            console.info(`Line was outside of Polygon ${el.id}`);
+            allPoly.push(el);
+            return;
+          } else if (lineWidth === 0) {
+            const polycut = polygonCut(el.geometry, cuttingLineString.geometry);
+            polycut.id = el.id;
+            api.add(polycut);
+            allPoly.push(polycut);
           } else {
-            const polycut = polygonCut(
+            const polycut = polygonCutWithSpacing(
               el.geometry,
               cuttingLineString.geometry,
               {
-                // line_width: lineWidth,
-                // line_width_unit: lineWidthUnit,
+                line_width: lineWidth,
+                line_width_unit: lineWidthUnit,
               }
             );
             polycut.id = el.id;
@@ -106,29 +103,25 @@ SplitPolygonMode.drawAndSplit = function (state) {
           }
         });
 
-        console.log("🚀 ~ file: mode.js ~ line 111 ~ allPoly", allPoly);
-
         this.fireUpdate(allPoly);
 
-        if (state.featuresToSplit?.[0]?.id)
-          api.setFeatureProperty(
-            state.featuresToSplit[0].id,
-            highlightPropertyName,
-            undefined
-          );
+        if (state.featuresToSplit?.[0]?.id) this.highlighFeatures(state, false);
       },
       onCancel: () => {
-        if (state.featuresToSplit?.[0]?.id)
-          api.setFeatureProperty(
-            state.featuresToSplit[0].id,
-            highlightPropertyName,
-            undefined
-          );
+        if (state.featuresToSplit?.[0]?.id) this.highlighFeatures(state, false);
       },
     });
   } catch (err) {
     console.log("🚀 ~ file: mode.js ~ line 116 ~ err", err);
   }
+};
+
+SplitPolygonMode.highlighFeatures = function (state, shouldHighlight = true) {
+  const color = shouldHighlight ? state.options.highlightColor : undefined;
+
+  state.featuresToSplit.forEach((f) => {
+    state.api.setFeatureProperty(f.id, highlightPropertyName, color);
+  });
 };
 
 SplitPolygonMode.toDisplayFeatures = function (state, geojson, display) {
@@ -148,11 +141,12 @@ SplitPolygonMode.fireUpdate = function (newF) {
 
 export default SplitPolygonMode;
 
+/// Note: currently has some issues, but generally is a better approach
 function polygonCut(poly, line) {
   return polygonSplitter(poly, line);
 }
 
-// Adopted from https://gis.stackexchange.com/a/344277/145409
+/// Adopted from https://gis.stackexchange.com/a/344277/145409
 function polygonCutWithSpacing(poly, line, options) {
   const { line_width, line_width_unit } = options || {};
 
