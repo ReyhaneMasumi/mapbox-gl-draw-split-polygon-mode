@@ -74,7 +74,7 @@ also, take a look at the [**example**](https://github.com/ReyhaneMasumi/mapbox-g
 
 ### Notes
 
-Splitting polygons are done using the `polygon-splitter` package. which is pretty nit but has some issues and quirks. if you specify a `lineWidth` option other than `zero (0)` another algorithm is used which doesn't have does issues but creates a spacing between features so they can no longer become `union`.
+Splitting polygons are done using the `polygon-splitter` package. which is pretty neat but has some issues and quirks. if you specify a `lineWidth` option other than `zero (0)` another algorithm is used which doesn't have does issues but creates a spacing between features so they can no longer become `union`.
 
 Also, There is an issue in `mapbox-gl-draw` which causes multi-features to have the same properties object and therefor if you `uncombine` a multi-feature and try to split one of the pieces the whole multi-feature gets highlighted as the selected feature.
 
