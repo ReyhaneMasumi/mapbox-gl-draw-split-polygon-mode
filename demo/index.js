@@ -3,15 +3,16 @@ import SelectFeatureMode, {
 } from "mapbox-gl-draw-select-mode";
 import defaultDrawStyle from "https://unpkg.com/@mapbox/mapbox-gl-draw@1.3.0/src/lib/theme.js";
 
-import SplitPolygonMode, { drawStyles as splitPolygonDrawStyles } from "..";
+import SplitPolygonMode, {
+  drawStyles as splitPolygonDrawStyles,
+  Constants as splitPolygonConstants,
+} from "..";
 
 const { MODE } = import.meta.env;
 
 import "./index.css";
 
-let map;
-let draw;
-let drawBar;
+let map, draw, drawBar;
 
 function goSplitMode(selectedFeatureIDs) {
   try {
@@ -19,7 +20,7 @@ function goSplitMode(selectedFeatureIDs) {
       featureIds: selectedFeatureIDs,
       /** Default option vlaues: */
       highlightColor: "#222",
-      // lineWidth: 0.001,
+      // lineWidth: 0,
       // lineWidthUnit: "kilometers",
     });
   } catch (err) {
@@ -188,5 +189,18 @@ map.once("load", () => {
 
   map.on("draw.update", function (e) {
     console.log("🚀 ~ file: index.js ~ line 158 ~ e", e);
+
+    /// Fixing an issue caused by mapbox-gl-draw. check `Readme.md` section ##Notes.
+    if (e.action === "split_polygon") {
+      const allFeatures = draw.getAll().features;
+
+      allFeatures.forEach(({ id }) =>
+        draw.setFeatureProperty(
+          id,
+          splitPolygonConstants.highlightPropertyName,
+          undefined
+        )
+      );
+    }
   });
 });

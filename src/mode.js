@@ -77,17 +77,17 @@ SplitPolygonMode.drawAndSplit = function (state) {
   try {
     this.changeMode(passingModeName, {
       onDraw: (cuttingLineString) => {
-        const allPoly = [];
+        const newPolygons = [];
         state.featuresToSplit.forEach((el) => {
           if (booleanDisjoint(el, cuttingLineString)) {
             console.info(`Line was outside of Polygon ${el.id}`);
-            allPoly.push(el);
+            newPolygons.push(el);
             return;
           } else if (lineWidth === 0) {
             const polycut = polygonCut(el.geometry, cuttingLineString.geometry);
             polycut.id = el.id;
             api.add(polycut);
-            allPoly.push(polycut);
+            newPolygons.push(polycut);
           } else {
             const polycut = polygonCutWithSpacing(
               el.geometry,
@@ -99,20 +99,19 @@ SplitPolygonMode.drawAndSplit = function (state) {
             );
             polycut.id = el.id;
             api.add(polycut);
-            allPoly.push(polycut);
+            newPolygons.push(polycut);
           }
         });
 
-        this.fireUpdate(allPoly);
-
-        if (state.featuresToSplit?.[0]?.id) this.highlighFeatures(state, false);
+        this.fireUpdate(newPolygons);
+        this.highlighFeatures(state, false);
       },
       onCancel: () => {
-        if (state.featuresToSplit?.[0]?.id) this.highlighFeatures(state, false);
+        this.highlighFeatures(state, false);
       },
     });
   } catch (err) {
-    console.log("🚀 ~ file: mode.js ~ line 116 ~ err", err);
+    console.error("🚀 ~ file: mode.js ~ line 116 ~ err", err);
   }
 };
 
