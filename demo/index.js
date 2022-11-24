@@ -1,28 +1,47 @@
-import SplitPolygonMode, { drawStyles as splitPolygonDrawStyles } from "..";
+import SelectFeatureMode, {
+  drawStyles as selectFeatureDrawStyles,
+} from "mapbox-gl-draw-select-mode";
 import defaultDrawStyle from "https://unpkg.com/@mapbox/mapbox-gl-draw@1.3.0/src/lib/theme.js";
+
+import SplitPolygonMode, {
+  drawStyles as splitPolygonDrawStyles,
+  Constants as splitPolygonConstants,
+} from "..";
+
+const { MODE } = import.meta.env;
 
 import "./index.css";
 
-let map;
-let draw;
-let drawBar;
+let map, draw, drawBar;
 
-const splitPolygon = () => {
+function goSplitMode(selectedFeatureIDs) {
   try {
-    draw?.changeMode(
-      "split_polygon",
+    draw?.changeMode("split_polygon", {
+      featureIds: selectedFeatureIDs,
       /** Default option vlaues: */
-      {
-        highlightColor: "#222",
-        lineWidth: 0.001,
-        lineWidthUnit: "kilometers",
-      }
-    );
+      highlightColor: "#222",
+      // lineWidth: 0,
+      // lineWidthUnit: "kilometers",
+    });
   } catch (err) {
-    alert(err.message);
     console.error(err);
   }
-};
+}
+
+function splitPolygon() {
+  const selectedFeatureIDs = draw.getSelectedIds();
+
+  if (selectedFeatureIDs.length > 0) {
+    goSplitMode(selectedFeatureIDs);
+  } else {
+    draw.changeMode("select_feature", {
+      selectHighlightColor: "yellow",
+      onSelect(selectedFeatureID) {
+        goSplitMode([selectedFeatureID]);
+      },
+    });
+  }
+}
 
 class extendDrawBar {
   constructor(opt) {
@@ -78,7 +97,10 @@ if (mapboxgl.getRTLTextPluginStatus() === "unavailable")
 
 map = new mapboxgl.Map({
   container: "map",
-  style: `https://map.ir/vector/styles/main/mapir-xyz-light-style.json`,
+  style:
+    MODE === "development"
+      ? { version: 8, sources: {}, layers: [] }
+      : `https://map.ir/vector/styles/main/mapir-xyz-light-style.json`,
   center: [51.3857, 35.6102],
   zoom: 7.78,
   pitch: 0,
@@ -100,9 +122,11 @@ map = new mapboxgl.Map({
 
 draw = new MapboxDraw({
   modes: {
-    ...SplitPolygonMode(MapboxDraw.modes),
+    ...SplitPolygonMode(SelectFeatureMode(MapboxDraw.modes)),
   },
-  styles: [...splitPolygonDrawStyles(defaultDrawStyle)],
+  styles: [
+    ...splitPolygonDrawStyles(selectFeatureDrawStyles(defaultDrawStyle)),
+  ],
   userProperties: true,
 });
 
@@ -114,7 +138,7 @@ drawBar = new extendDrawBar({
     {
       on: "click",
       action: splitPolygon,
-      classes: ["split-icon"],
+      classes: ["split-polygon"],
     },
   ],
 });
@@ -126,9 +150,9 @@ map.once("load", () => {
     type: "FeatureCollection",
     features: [
       {
+        id: "example",
         type: "Feature",
         properties: {},
-        id: "example-id",
         geometry: {
           coordinates: [
             [
@@ -165,5 +189,18 @@ map.once("load", () => {
 
   map.on("draw.update", function (e) {
     console.log("🚀 ~ file: index.js ~ line 158 ~ e", e);
+
+    /// Fixing an issue caused by mapbox-gl-draw. check `Readme.md` section ##Notes.
+    if (e.action === "split_polygon") {
+      const allFeatures = draw.getAll().features;
+
+      allFeatures.forEach(({ id }) =>
+        draw.setFeatureProperty(
+          id,
+          splitPolygonConstants.highlightPropertyName,
+          undefined
+        )
+      );
+    }
   });
 });

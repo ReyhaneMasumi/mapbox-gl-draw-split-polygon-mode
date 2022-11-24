@@ -29,7 +29,7 @@ or use CDN:
 ```js
 import mapboxGl from "mapbox-gl";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
-import defaultDrawStyle from "https://unpkg.com/@mapbox/mapbox-gl-draw@1.3.0/src/lib/theme.js";
+import defaultDrawStyle from "@mapbox/mapbox-gl-draw/src/lib/theme.js";
 
 import SplitPolygonMode, {
   drawStyles as splitPolygonDrawStyles,
@@ -59,10 +59,10 @@ draw.changeMode("split_polygon");
 /// you can modify the behavior using these options:
 draw.changeMode(
   "split_polygon",
-  /** Default option vlaues: */
+  /** Default option values: */
   {
     highlightColor: "#222",
-    lineWidth: 0.001,
+    lineWidth: 0,
     lineWidthUnit: "kilometers",
   }
 );
@@ -70,11 +70,13 @@ draw.changeMode(
 
 > The syntax used here is because `mapbox-gl-draw-split-polygon-mode` needs to modify the modes object and also the `styles` object passed to the `mapbox-gl-draw`. the reason is this package uses [`mapbox-gl-draw-passing-mode`](https://github.com/mhsattarian/mapbox-gl-draw-passing-mode) underneath (and adds this to modes object) and needs to modify the styles to show the selected feature.
 
-also, take a look at the [**example**](https://github.com/ReyhaneMasumi/mapbox-gl-draw-split-polygon-mode/blob/main/demo/src/App.js) in the `demo` directory.
+also, take a look at the [**example**](https://github.com/ReyhaneMasumi/mapbox-gl-draw-split-polygon-mode/blob/main/demo/src/App.js) in the `demo` directory. in this example `mapbox-gl-draw-select-mode` is used so users can select feature after clicking in the split icon in the toolbar and get a highlighting when hover each map feature.
 
-### note
+### Notes
 
-There is an issue in `mapbox-gl-draw` which causes multi-features to have the same properties object and therefor if you `uncombine` a multi-feature and try to split one of the pieces the whole multi-feature gets highlighted as the selected feature.
+Splitting polygons are done using the `polygon-splitter` package. which is pretty nit but has some issues and quirks. if you specify a `lineWidth` option other than `zero (0)` another algorithm is used which doesn't have does issues but creates a spacing between features so they can no longer become `union`.
+
+Also, There is an issue in `mapbox-gl-draw` which causes multi-features to have the same properties object and therefor if you `uncombine` a multi-feature and try to split one of the pieces the whole multi-feature gets highlighted as the selected feature.
 
 ### Upgrade from version 1
 
